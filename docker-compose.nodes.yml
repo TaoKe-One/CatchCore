@@ -1,0 +1,219 @@
+# Docker Compose configuration for CatchCore with distributed scanning nodes
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.nodes.yml up
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Scanning Node 1 - Scanner Type
+  # ============================================================================
+  scanner-node-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: catchcore-scanner-1
+    restart: always
+    environment:
+      - NODE_NAME=scanner-node-01
+      - NODE_TYPE=scanner
+      - NODE_HOST=scanner-node-1
+      - NODE_PORT=8001
+      - MASTER_HOST=backend
+      - MASTER_PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+      - MAX_CONCURRENT_TASKS=5
+      - HEARTBEAT_INTERVAL=30
+      - CHECK_TASK_INTERVAL=5
+      - LOG_LEVEL=INFO
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./node_configs/node-01.yml:/app/node_config.yml
+      - ./data/node-1/logs:/app/logs
+      - ./data/node-1/data:/app/data
+    networks:
+      - catchcore-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # ============================================================================
+  # Scanning Node 2 - Scanner Type
+  # ============================================================================
+  scanner-node-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: catchcore-scanner-2
+    restart: always
+    environment:
+      - NODE_NAME=scanner-node-02
+      - NODE_TYPE=scanner
+      - NODE_HOST=scanner-node-2
+      - NODE_PORT=8002
+      - MASTER_HOST=backend
+      - MASTER_PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+      - MAX_CONCURRENT_TASKS=5
+      - HEARTBEAT_INTERVAL=30
+      - CHECK_TASK_INTERVAL=5
+      - LOG_LEVEL=INFO
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./node_configs/node-02.yml:/app/node_config.yml
+      - ./data/node-2/logs:/app/logs
+      - ./data/node-2/data:/app/data
+    networks:
+      - catchcore-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # ============================================================================
+  # Scanning Node 3 - Scanner Type
+  # ============================================================================
+  scanner-node-3:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: catchcore-scanner-3
+    restart: always
+    environment:
+      - NODE_NAME=scanner-node-03
+      - NODE_TYPE=scanner
+      - NODE_HOST=scanner-node-3
+      - NODE_PORT=8003
+      - MASTER_HOST=backend
+      - MASTER_PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+      - MAX_CONCURRENT_TASKS=5
+      - HEARTBEAT_INTERVAL=30
+      - CHECK_TASK_INTERVAL=5
+      - LOG_LEVEL=INFO
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./node_configs/node-03.yml:/app/node_config.yml
+      - ./data/node-3/logs:/app/logs
+      - ./data/node-3/data:/app/data
+    networks:
+      - catchcore-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # ============================================================================
+  # Worker Node 1 - POC Detection & Password Cracking
+  # ============================================================================
+  worker-node-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: catchcore-worker-1
+    restart: always
+    environment:
+      - NODE_NAME=worker-node-01
+      - NODE_TYPE=worker
+      - NODE_HOST=worker-node-1
+      - NODE_PORT=8004
+      - MASTER_HOST=backend
+      - MASTER_PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+      - MAX_CONCURRENT_TASKS=3
+      - HEARTBEAT_INTERVAL=30
+      - CHECK_TASK_INTERVAL=5
+      - LOG_LEVEL=INFO
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./node_configs/node-04.yml:/app/node_config.yml
+      - ./data/worker-1/logs:/app/logs
+      - ./data/worker-1/data:/app/data
+    networks:
+      - catchcore-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
+  # ============================================================================
+  # Worker Node 2 - POC Detection & Password Cracking
+  # ============================================================================
+  worker-node-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: catchcore-worker-2
+    restart: always
+    environment:
+      - NODE_NAME=worker-node-02
+      - NODE_TYPE=worker
+      - NODE_HOST=worker-node-2
+      - NODE_PORT=8005
+      - MASTER_HOST=backend
+      - MASTER_PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+      - MAX_CONCURRENT_TASKS=3
+      - HEARTBEAT_INTERVAL=30
+      - CHECK_TASK_INTERVAL=5
+      - LOG_LEVEL=INFO
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./node_configs/node-05.yml:/app/node_config.yml
+      - ./data/worker-2/logs:/app/logs
+      - ./data/worker-2/data:/app/data
+    networks:
+      - catchcore-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
+networks:
+  catchcore-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  influxdb_data:

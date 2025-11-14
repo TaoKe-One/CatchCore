@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: catchcore-postgres
+    environment:
+      POSTGRES_USER: catchcore
+      POSTGRES_PASSWORD: catchcore
+      POSTGRES_DB: catchcore_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catchcore -d catchcore_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - catchcore-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: catchcore-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - catchcore-network
+
+  # InfluxDB Time Series Database
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: catchcore-influxdb
+    environment:
+      INFLUXDB_DB: catchcore
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: admin
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    networks:
+      - catchcore-network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: catchcore-backend
+    environment:
+      - DATABASE_URL=postgresql://catchcore:catchcore@postgres:5432/catchcore_db
+      - REDIS_URL=redis://redis:6379/0
+      - DEBUG=True
+      - SECRET_KEY=your-secret-key-change-this-in-production
+      - CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173", "http://frontend:3000"]
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: python main.py
+    networks:
+      - catchcore-network
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: catchcore-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src
+    networks:
+      - catchcore-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  influxdb_data:
+
+networks:
+  catchcore-network:
+    driver: bridge

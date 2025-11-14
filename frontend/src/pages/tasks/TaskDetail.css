@@ -1,0 +1,117 @@
+/* TaskDetail Component Styles */
+
+.task-logs {
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.task-logs .ant-list {
+  background: transparent;
+}
+
+.task-logs .ant-list-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+  margin: 0;
+}
+
+.task-logs .ant-list-item:last-child {
+  border-bottom: none;
+}
+
+.task-logs .ant-list-item span {
+  word-break: break-all;
+  white-space: pre-wrap;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.task-results {
+  padding: 12px;
+}
+
+.task-results .ant-list-item {
+  margin-bottom: 16px;
+}
+
+.task-results .ant-card {
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+}
+
+.task-results pre {
+  background: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Progress Bar Styling */
+.ant-progress-circle-path {
+  animation: none;
+}
+
+.task-logs-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+/* Log Level Colors */
+.log-debug {
+  color: #8c8c8c;
+}
+
+.log-info {
+  color: #1890ff;
+}
+
+.log-warning {
+  color: #faad14;
+}
+
+.log-error {
+  color: #f5222d;
+}
+
+.log-critical {
+  color: #ff4d4f;
+}
+
+/* Connection Status */
+.connection-status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: pulse 2s infinite;
+}
+
+.connection-status.connected {
+  background: #52c41a;
+}
+
+.connection-status.disconnected {
+  background: #f5222d;
+  animation: none;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

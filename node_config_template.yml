@@ -1,0 +1,141 @@
+# CatchCore Node Configuration Template
+# Copy this file to create node-specific configurations
+
+node:
+  # Unique identifier for this node
+  name: "scanner-node-01"
+
+  # Node type: scanner (for port/service scanning), worker (for POC/password cracking)
+  type: "scanner"
+
+  # Node local IP address (accessible to Master)
+  host: "192.168.1.100"
+
+  # Node local port
+  port: 8001
+
+# Master server configuration
+master:
+  # Master server IP or hostname
+  host: "192.168.1.50"
+
+  # Master API port
+  port: 8000
+
+  # Master API base URL
+  api_url: "http://192.168.1.50:8000/api/v1"
+
+# Redis configuration for task queue and caching
+redis:
+  # Redis server address
+  host: "192.168.1.50"
+
+  # Redis port
+  port: 6379
+
+  # Redis database number
+  db: 0
+
+  # Redis password (null if no authentication)
+  password: null
+
+# Performance tuning settings
+performance:
+  # Maximum number of concurrent tasks this node can execute
+  max_concurrent_tasks: 5
+
+  # Number of worker threads
+  worker_threads: 4
+
+  # Heartbeat interval in seconds (how often to report status to Master)
+  heartbeat_interval: 30
+
+  # Task check interval in seconds (how often to poll for new tasks)
+  check_task_interval: 5
+
+  # Task timeout in seconds
+  task_timeout: 3600
+
+  # Connection pool size
+  connection_pool_size: 10
+
+# Scanning tools configuration
+tools:
+  # Enable FScan for network scanning
+  fscan_enabled: true
+
+  # Enable Nuclei for vulnerability scanning
+  nuclei_enabled: true
+
+  # Enable Afrog for multi-protocol scanning
+  afrog_enabled: true
+
+  # Enable DDDD for DNS enumeration
+  dddd_enabled: true
+
+  # Enable DirSearch for directory enumeration
+  dirsearch_enabled: true
+
+  # Automatically install missing tools
+  auto_install: true
+
+# Logging configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+
+  # Log file path
+  file: "/app/logs/node_agent.log"
+
+  # Maximum log file size in MB
+  max_file_size: 100
+
+  # Number of backup log files to keep
+  backup_count: 5
+
+# Network and proxy settings
+network:
+  # Use proxy for scanning (optional)
+  proxy: null
+  # proxy: "http://proxy.example.com:8080"
+
+  # Custom DNS servers (optional)
+  dns_servers: null
+  # dns_servers:
+  #   - "8.8.8.8"
+  #   - "1.1.1.1"
+
+  # Network timeout in seconds
+  timeout: 30
+
+  # Connect timeout in seconds
+  connect_timeout: 10
+
+# Advanced settings
+advanced:
+  # Enable task result compression
+  compress_results: true
+
+  # Enable result encryption
+  encrypt_results: false
+
+  # Retry failed tasks
+  retry_failed_tasks: true
+
+  # Number of retries
+  max_retries: 3
+
+  # Retry backoff in seconds
+  retry_backoff: 60
+
+  # Monitor system resources and pause if limits exceeded
+  monitor_resources: true
+
+  # Pause tasks if CPU usage exceeds this percentage
+  cpu_threshold: 85
+
+  # Pause tasks if memory usage exceeds this percentage
+  memory_threshold: 85
+
+  # Pause tasks if disk usage exceeds this percentage
+  disk_threshold: 90

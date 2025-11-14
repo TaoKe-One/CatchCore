@@ -1,0 +1,39 @@
+# Backend
+backend/.env
+backend/.env.local
+backend/__pycache__/
+backend/*.pyc
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/venv/
+backend/env/
+backend/.vscode/
+backend/.idea/
+backend/*.egg-info/
+backend/dist/
+backend/build/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.vscode/
+frontend/.idea/
+frontend/*.log
+
+# General
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.iml
+.env.local
+.env.*.local
+
+# Docker
+.docker/
+
+# IDE
+*.code-workspace
